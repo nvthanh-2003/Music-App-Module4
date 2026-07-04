@@ -7,17 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SongRepository {
-    private final String dbUrl = "jdbc:mysql://localhost:3306/music_app_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    private final String dbUrl = "jdbc:mysql://localhost:3306/music_app_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8";
     private final String dbUser = "root";
-    private final String dbPass = "123456";
+    private final String dbPass = "1234";
 
     public List<Song> getAllSongs() {
         List<Song> songs = new ArrayList<>();
 
-        // CẬP NHẬT: Thay "SELECT * FROM songs" bằng câu lệnh JOIN để lấy thêm cột artist_name từ bảng artists
-        String query = "SELECT s.*, a.name AS artist_name " +
+        // Lấy thêm tên thể loại để hiển thị badge trong UI
+        String query = "SELECT s.*, a.name AS artist_name, g.name AS genre_name " +
                 "FROM songs s " +
-                "LEFT JOIN artists a ON s.artist_id = a.id";
+            "LEFT JOIN artists a ON s.artist_id = a.id " +
+            "LEFT JOIN genres g ON s.genre_id = g.id";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -30,6 +31,7 @@ public class SongRepository {
                             rs.getLong("id"),
                             rs.getString("title"),
                             rs.getString("artist_name"),
+                            rs.getString("genre_name"),
                             rs.getString("img_url"),
                             rs.getString("file_url")
                     ));
@@ -43,10 +45,11 @@ public class SongRepository {
 
     public List<Song> searchSongs(String keyword) {
         List<Song> songs = new ArrayList<>();
-        // Dùng LIKE để tìm kiếm gần đúng và dùng JOIN để tìm được cả theo tên ca sĩ
-        String query = "SELECT s.*, a.name AS artist_name FROM songs s " +
+        // Dùng LIKE để tìm kiếm gần đúng và dùng JOIN để tìm được cả theo tên ca sĩ / thể loại
+        String query = "SELECT s.*, a.name AS artist_name, g.name AS genre_name FROM songs s " +
                 "LEFT JOIN artists a ON s.artist_id = a.id " +
-                "WHERE s.title LIKE ? OR a.name LIKE ?";
+            "LEFT JOIN genres g ON s.genre_id = g.id " +
+            "WHERE s.title LIKE ? OR a.name LIKE ? OR g.name LIKE ?";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
@@ -54,6 +57,7 @@ public class SongRepository {
 
                 ps.setString(1, "%" + keyword + "%");
                 ps.setString(2, "%" + keyword + "%");
+                ps.setString(3, "%" + keyword + "%");
                 ResultSet rs = ps.executeQuery();
 
                 while (rs.next()) {
@@ -61,6 +65,7 @@ public class SongRepository {
                             rs.getLong("id"),
                             rs.getString("title"),
                             rs.getString("artist_name"),
+                            rs.getString("genre_name"),
                             rs.getString("img_url"),
                             rs.getString("file_url")
                     ));

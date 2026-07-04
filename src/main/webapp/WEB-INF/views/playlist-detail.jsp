@@ -284,6 +284,11 @@
                             <div class="text-truncate">
                                 <h6 class="fw-bold text-white mb-1 text-truncate">${song.title}</h6>
                                 <p class="mb-0 small text-truncate" style="color: #b3a7c2;">${song.artistName}</p>
+                                <c:if test="${not empty song.genreName}">
+                                    <span class="badge rounded-pill mt-1" style="background: rgba(157, 78, 221, 0.16); color: #d9c8ff; border: 1px solid rgba(157, 78, 221, 0.28); font-size: 0.68rem;">
+                                        ${song.genreName}
+                                    </span>
+                                </c:if>
                             </div>
                         </div>
 

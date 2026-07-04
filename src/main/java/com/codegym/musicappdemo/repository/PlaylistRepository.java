@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistRepository implements IPlaylistRepository {
-    private String url = "jdbc:mysql://localhost:3306/music_app_db";
+    private String url = "jdbc:mysql://localhost:3306/music_app_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8";
     private String user = "root";
-    private String pass = "123456";
+    private String pass = "1234";
 
     protected Connection getConnection() throws SQLException {
         try {
@@ -131,9 +131,10 @@ public class PlaylistRepository implements IPlaylistRepository {
     @Override
     public List<Song> findSongsInPlaylist(Long playlistId) {
         List<Song> songs = new ArrayList<>();
-        String query = "SELECT s.*, a.name AS artist_name FROM songs s " +
+        String query = "SELECT s.*, a.name AS artist_name, g.name AS genre_name FROM songs s " +
                 "JOIN playlist_song ps ON s.id = ps.song_id " +
                 "LEFT JOIN artists a ON s.artist_id = a.id " +
+            "LEFT JOIN genres g ON s.genre_id = g.id " +
                 "WHERE ps.playlist_id = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setLong(1, playlistId);
@@ -145,6 +146,7 @@ public class PlaylistRepository implements IPlaylistRepository {
                 s.setImgUrl(rs.getString("img_url"));
                 s.setFileUrl(rs.getString("file_url"));
                 s.setArtistName(rs.getString("artist_name"));
+                s.setGenreName(rs.getString("genre_name"));
 
                 songs.add(s);
             }
