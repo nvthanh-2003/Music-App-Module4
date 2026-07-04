@@ -8,10 +8,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Song {
-    private int id;
+    private Long id;
     private String title;
     private String artistName;
     private String imgUrl;
     private String fileUrl;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setId(int id) {
+        this.id = (long) id;
+    }
 }

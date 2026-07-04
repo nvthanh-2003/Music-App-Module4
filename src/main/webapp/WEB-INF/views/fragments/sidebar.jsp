@@ -17,7 +17,7 @@
             </a>
         </li>
         <li>
-            <a href="${pageContext.request.contextPath}/playlists" class="nav-link text-white">
+            <a href="${pageContext.request.contextPath}/playlist" class="nav-link text-white">
                 <i class="fa-solid fa-list me-2"></i> Playlist Của Tôi
             </a>
         </li>
