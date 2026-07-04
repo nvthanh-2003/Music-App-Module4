@@ -18,8 +18,8 @@ java {
     sourceCompatibility = '17'
 }
 
-sourceCompatibility = '21'
-targetCompatibility = '21'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -33,7 +33,7 @@ dependencies {
     // Đã loại bỏ hoàn toàn dòng glassfish.jsftemplating bị lỗi
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
-
+    implementation 'mysql:mysql-connector-java:8.0.33'
     // 3. Kết nối cơ sở dữ liệu MySQL
     implementation 'com.mysql:mysql-connector-j:8.3.0'
 

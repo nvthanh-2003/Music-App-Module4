@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VibeStream - Music App</title>
     <jsp:include page="/WEB-INF/views/fragments/head.jsp" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="bg-dark text-white" style="height: 100vh; overflow: hidden;">
 
