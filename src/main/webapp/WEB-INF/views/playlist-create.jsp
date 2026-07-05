@@ -26,7 +26,7 @@
     }
 
     .mp3-input-dark:focus {
-        border-color: #7b2cbf !important; /* Đổi viền sang màu tím khi click vào */
+        border-color: #7b2cbf !important;
         box-shadow: 0 0 10px rgba(123, 44, 191, 0.3) !important;
     }
 
@@ -54,7 +54,10 @@
             <div class="p-4 mp3-form-box shadow">
                 <h3 class="text-white fw-bold mb-4">Tạo Playlist Mới</h3>
 
-                <form action="${pageContext.request.contextPath}/playlist" method="post">
+                <form action="${pageContext.request.contextPath}/playlist?action=create" method="post">
+
+                    <input type="hidden" name="action" value="create">
+
                     <div class="mb-4">
                         <label for="playlistName" class="form-label small fw-bold text-uppercase"
                                style="color: #8d8599; letter-spacing: 0.5px;">
@@ -62,10 +65,13 @@
                         </label>
                         <input type="text" class="form-control form-control-lg mp3-input-dark shadow-none"
                                id="playlistName" name="playlistName" placeholder="Ví dụ: Nhạc chill cuối tuần..."
-                               required max="100">
+                               required
+                               maxlength="100"
+                               pattern=".*\S+.*"
+                               title="Tên danh sách phát không được để trống hoặc chỉ chứa khoảng trắng!">
                     </div>
 
-                    <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-bold shadow">
+                    <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-bold shadow" style="background-color: #2fbc61; border: none;">
                         <i class="bi bi-check-lg me-1"></i> Lưu Playlist
                     </button>
                 </form>

@@ -6,7 +6,8 @@ import com.codegym.musicappdemo.model.Song;
 import java.util.List;
 
 public interface IPlaylistRepository {
-    List<Playlist> findPlaylistsByUserId(Long userId);
+
+    List<Playlist> findPlaylistsByUserId(long userId);
 
     List<Song> findSongsInPlaylist(Long playlistId);
 
@@ -17,6 +18,8 @@ public interface IPlaylistRepository {
     Playlist findById(Long playlistId);
 
     void update(Playlist playlist);
+
+    boolean addSongToPlaylist(long playlistId, long songId);
 
     void deleteSongFromPlaylist(long playlistId, long songId);
 }
