@@ -2,12 +2,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <style>
+    /* Nền Gradient tím đêm Deep Violet đồng bộ hệ thống */
     .mp3-edit-container {
         background: linear-gradient(180deg, #170f23 0%, #100a19 100%);
         min-height: 100vh;
         color: #fff;
     }
 
+    /* Thẻ bọc form phong cách kính mờ */
     .mp3-form-box {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.05);
@@ -15,6 +17,7 @@
         backdrop-filter: blur(10px);
     }
 
+    /* Ô input nhập liệu được bo tròn mượt mà */
     .mp3-input-dark {
         background-color: rgba(255, 255, 255, 0.05) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -27,6 +30,7 @@
         box-shadow: 0 0 10px rgba(123, 44, 191, 0.3) !important;
     }
 
+    /* Nút quay lại tinh tế */
     .btn-back-mp3 {
         color: #a0a0a0;
         transition: color 0.2s;
@@ -60,7 +64,11 @@
                             Tên danh sách phát mới
                         </label>
                         <input type="text" class="form-control form-control-lg mp3-input-dark shadow-none"
-                               id="playlistName" name="playlistName" value="${playlist.name}" required max="100">
+                               id="playlistName" name="playlistName" value="${playlist.name}"
+                               required
+                               maxlength="100"
+                               pattern=".*\S+.*"
+                               title="Tên danh sách phát không được để trống hoặc chứa toàn khoảng trắng!">
                     </div>
 
                     <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow"
