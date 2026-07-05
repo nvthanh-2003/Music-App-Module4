@@ -1,15 +1,110 @@
-/* Custom Giao diện Dark Mode */
-.bg-dark { background-color: #121212 !important; }
-.bg-secondary { background-color: #181818 !important; }
-.bg-black { background-color: #000000 !important; }
+/* ==========================================================================
+   THIẾT KẾ GIAO DIỆN VIBESTREAM CAO CẤP & RÕ RÀNG
+   ========================================================================== */
 
-/* Hiệu ứng hover vào card bài hát */
-.project-card-hover .btn-play-now {
-    opacity: 0;
-    transition: all 0.3s ease;
-    transform: translateY(10px);
+/* 1. Tạo khối nền riêng cho khu vực nội dung (Tách biệt khỏi nền đen tổng thể) */
+.table-responsive {
+    background: #181818; /* Màu nền xám sẫm chuẩn Spotify */
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    margin-top: 15px;
 }
-.project-card-hover:hover .btn-play-now {
-    opacity: 1;
-    transform: translateY(0);
+
+/* 2. Cấu trúc lại bảng hiển thị */
+.custom-song-table {
+    background-color: transparent !important;
+    margin-bottom: 0;
+}
+
+/* Tiêu đề cột (Thành phần phía trên) */
+.custom-song-table thead th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #b3b3b3 !important; /* Màu xám sáng dễ nhìn */
+    padding-bottom: 12px;
+    font-weight: 700;
+}
+
+/* 3. Tinh chỉnh từng dòng bài hát (Rows) */
+.custom-song-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.25s ease-in-out;
+    cursor: pointer;
+}
+
+/* Hiệu ứng Hover dòng bài hát: Phát sáng và đổi màu nền nhẹ */
+.custom-song-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* 4. Làm rõ ràng text hiển thị */
+/* Số thứ tự bài hát */
+.custom-song-table tbody tr td.text-muted,
+.custom-song-table tbody tr td:first-child {
+    color: #a7a7a7 !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* Tên bài hát: Chữ trắng nổi bật hẳn lên */
+.custom-song-table .fw-semibold {
+    color: #ffffff !important;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+}
+
+/* Khi hover dòng thì tên bài hát chuyển sang màu xanh lá thương hiệu */
+.custom-song-table tbody tr:hover .fw-semibold {
+    color: #1db954 !important;
+}
+
+/* Tên Ca sĩ: Sáng rõ hơn, không bị mờ tối */
+.custom-song-table td.text-white-50,
+.custom-song-table .text-muted {
+    color: #e0e0e0 !important; /* Tăng độ sáng để nhìn rõ mồn một */
+    font-size: 0.95rem;
+}
+
+/* 5. Hiệu ứng Hover ảnh bìa hiện nút Play */
+.container-song-row:hover .btn-play-now {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.btn-play-now {
+    background-color: #1db954 !important;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s ease !important;
+}
+
+.btn-play-now:hover {
+    transform: translate(-50%, -50%) scale(1.15) !important;
+    background-color: #1ed760 !important;
+}
+
+/* 6. Tinh chỉnh nút XÓA tinh tế */
+.btn-delete-custom {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #b3b3b3 !important;
+    background-color: rgba(255, 255, 255, 0.03);
+    transition: all 0.2s ease;
+}
+
+.btn-delete-custom:hover {
+    background-color: #e91429 !important; /* Đỏ rực khi hover */
+    color: #ffffff !important;
+    border-color: #e91429 !important;
+    box-shadow: 0 0 10px rgba(233, 20, 41, 0.4);
+    transform: scale(1.05);
 }

@@ -4,8 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibeStream - Music App</title>
+    <title>VibeStream - Music Experience</title>
     <jsp:include page="/WEB-INF/views/fragments/head.jsp" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -17,10 +16,14 @@
             <jsp:include page="/WEB-INF/views/fragments/sidebar.jsp" />
         </div>
 
-        <div class="col-md-10 h-100 d-flex flex-column" style="overflow-y: auto; padding-bottom: 100px;">
+        <div class="col-md-10 h-100 d-flex flex-column" style="overflow-y: auto; padding-bottom: 120px;">
             <nav class="navbar navbar-dark bg-dark px-4 py-3 border-bottom border-secondary">
-                <form class="d-flex w-50" action="${pageContext.request.contextPath}/search" method="GET">
-                    <input class="form-control bg-secondary text-white border-0 me-2" type="search" name="keyword" placeholder="Tìm kiếm bài hát, ca sĩ...">
+                <form class="d-flex w-50" action="${pageContext.request.contextPath}/home" method="GET">
+                    <input class="form-control bg-secondary text-white border-0 me-2"
+                           type="search"
+                           name="keyword"
+                           value="${currentKeyword}"
+                           placeholder="Tìm kiếm bài hát, ca sĩ...">
                     <button class="btn btn-outline-success" type="submit">Tìm</button>
                 </form>
             </nav>
