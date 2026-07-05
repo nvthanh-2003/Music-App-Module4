@@ -109,7 +109,35 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
-    /* Nút quay lại nhỏ gọn */
+    .btn-play-now-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background-color: #2fbc61 !important;
+        border: none !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 4px 12px rgba(47, 188, 97, 0.3);
+    }
+
+    .btn-play-now-circle:hover {
+        transform: scale(1.08);
+        box-shadow: 0 4px 15px rgba(47, 188, 97, 0.5);
+        background-color: #3ad171 !important;
+    }
+
+    .btn-play-now-circle i {
+        color: #fff !important;
+        font-size: 1.2rem;
+    }
+
+    /* Tinh chỉnh riêng cho icon play lệch tâm một chút cho cân đối */
+    .btn-play-now-circle i.bi-play-fill {
+        margin-left: 2px;
+    }
+
     .btn-back-mp3 {
         color: #b3a7c2;
         transition: color 0.2s;
@@ -214,7 +242,9 @@
                     <c:choose>
                         <c:when test="${not empty foundSongs}">
                             <c:forEach var="fSong" items="${foundSongs}">
-                                <div class="d-flex align-items-center justify-content-between p-2 rounded-3 mp3-track-card-row" style="padding: 10px 20px !important;">
+                                <div class="d-flex align-items-center justify-content-between p-2 rounded-3 mp3-track-card-row container-song-row"
+                                     style="padding: 10px 20px !important;"
+                                     data-url="${pageContext.request.contextPath}/${fSong.fileUrl}">
                                     <div class="d-flex align-items-center">
                                         <img src="${not empty fSong.imgUrl ? fSong.imgUrl : 'https://placehold.co/40x40/282828/ffffff?text=Music'}" class="rounded me-3" style="width: 40px; height: 40px;" alt="">
                                         <div>
@@ -223,7 +253,7 @@
                                         </div>
                                     </div>
                                     <button class="btn btn-sm btn-outline-light rounded-pill px-3" style="font-size: 0.8rem; border-color: rgba(255,255,255,0.2);"
-                                            onclick="addSongToPlaylist('${fSong.id}', '${fSong.title}')">
+                                            onclick="event.stopPropagation(); addSongToPlaylist('${fSong.id}', '${fSong.title}')">
                                         <i class="bi bi-plus-lg me-1"></i> Thêm vào playlist
                                     </button>
                                 </div>
@@ -255,8 +285,8 @@
 
         <div class="d-flex flex-wrap gap-3">
             <button class="btn btn-mp3-primary rounded-pill px-4 py-2.5 fw-bold text-white shadow"
-                    onclick="togglePlayAll()">
-                <i class="bi bi-play-circle-fill me-2 fs-5"></i><span id="lblPlayText">Phát tất cả</span>
+                    id="btnPlayAllHeader" onclick="togglePlayAll()">
+                <i class="bi bi-play-circle-fill me-2 fs-5" id="iconPlayAllHeader"></i><span id="lblPlayText">Phát tất cả</span>
             </button>
             <button class="btn btn-mp3-outline rounded-pill px-4 py-2.5 fw-bold shadow" onclick="playRandom()">
                 <i class="bi bi-shuffle me-2"></i>Phát ngẫu nhiên
@@ -273,7 +303,8 @@
         <c:choose>
             <c:when test="${not empty songs}">
                 <c:forEach var="song" varStatus="status" items="${songs}">
-                    <div class="d-flex align-items-center justify-content-between mp3-track-card-row">
+                    <div class="d-flex align-items-center justify-content-between mp3-track-card-row container-song-row"
+                         data-url="${pageContext.request.contextPath}/${song.fileUrl}">
 
                         <div class="d-flex align-items-center flex-grow-1" style="min-width: 0;">
                             <span class="fw-bold me-4 text-center text-muted" style="width: 24px; font-size: 1.1rem;">
@@ -293,14 +324,19 @@
                         </div>
 
                         <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-3">
-                            <button class="btn p-0 border-0 text-white-50 shadow-none" style="font-size: 1.3rem;"
-                                    onclick="playSingleSong('${song.title}', this)">
-                                <i id="play-icon-${status.count}" class="bi bi-play-fill song-play-btn-track" style="color: #2fbc61;"></i>
+                            <button class="btn btn-play-now-circle btn-play-now"
+                                    type="button"
+                                    data-title="${song.title}"
+                                    data-artist="${song.artistName}"
+                                    data-url="${pageContext.request.contextPath}/${song.fileUrl}"
+                                    data-img="${song.imgUrl}"
+                                    onclick="handlePlayIconToggle(this)">
+                                <i id="play-icon-${status.count}" class="bi bi-play-fill song-play-btn-track"></i>
                             </button>
 
                             <div class="dropdown">
                                 <button class="btn p-0 border-0 text-white-50 shadow-none" style="font-size: 1.1rem;"
-                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation();">
                                     <i class="bi bi-three-dots"></i>
                                 </button>
 
@@ -323,7 +359,7 @@
                                     </li>
                                     <li>
                                         <button type="button" class="dropdown-item py-2 small fw-semibold text-danger border-0 bg-transparent w-100 text-start"
-                                                onclick="confirmDeleteSong('${song.title}', '${playlistId}', '${song.id}')">
+                                                onclick="event.stopPropagation(); confirmDeleteSong('${song.title}', '${playlistId}', '${song.id}')">
                                             <i class="bi bi-trash3 me-2"></i> Xóa khỏi Playlist
                                         </button>
                                     </li>
@@ -371,41 +407,94 @@
 <script>
     let isPlaying = false;
     let toastTimeout;
-
-    // Biến toàn cục để theo dõi bài hát đơn lẻ đang được phát tích cực
-    let currentPlayingTitle = null;
-
-    // Biến lưu tạm địa chỉ URL sẽ điều hướng đi khi người dùng nhấn xác nhận xóa nhạc
     let pendingDeleteUrl = "";
+    let currentPlayingBtn = null;
 
-    // --- TỰ ĐỘNG CHẠY KHI TRANG TẢI XONG (BẮT LỖI TỪ CONTROLLER BẮN VỀ) ---
+    // --- KHỞI TẠO ĐỐI TƯỢNG PHÁT NHẠC TOÀN CỤC ---
+    const audioPlayer = new Audio();
+
     window.addEventListener('DOMContentLoaded', (event) => {
-        // Hứng thuộc tính "businessError" được Controller đẩy ra request (nếu có)
         const errorFromBackend = "${businessError}";
         if (errorFromBackend && errorFromBackend.trim() !== "" && errorFromBackend !== "\${businessError}") {
-            // Hiển thị Toast cảnh báo màu đỏ với icon tam giác chấm than rực rỡ
             showMp3Toast(errorFromBackend, "bi-exclamation-triangle-fill", "#ff6b6b");
         }
     });
 
-    // ĐÃ BỔ SUNG: Kích hoạt hiện Modal xóa nhạc phong cách Dark Mode và nạp thông tin động
+    function handlePlayIconToggle(buttonElement) {
+        const icon = buttonElement.querySelector('i');
+        const songTitle = buttonElement.getAttribute('data-title');
+        const songUrl = buttonElement.getAttribute('data-url'); // Lấy link file nhạc (.mp3)
+
+        // Trường hợp 1: Nhấn vào chính bài hát đang hoạt động -> Chuyển đổi trạng thái Pause/Play thực tế
+        if (currentPlayingBtn === buttonElement) {
+            if (audioPlayer.paused) {
+                audioPlayer.play().catch(e => console.log("Lỗi phát nhạc:", e));
+                icon.classList.remove('bi-play-fill');
+                icon.classList.add('bi-pause-fill');
+                showMp3Toast("Đang phát tiếp bài: " + songTitle, "bi-play-fill", "#2fbc61");
+            } else {
+                audioPlayer.pause(); // Dừng phát nhạc thực tế ngay lập tức
+                icon.classList.remove('bi-pause-fill');
+                icon.classList.add('bi-play-fill');
+                showMp3Toast("Đã tạm dừng bài: " + songTitle, "bi-pause-fill", "#ff6b6b");
+            }
+            return;
+        }
+
+        // Trường hợp 2: Khởi chạy một bài hát mới hoàn toàn
+        if (currentPlayingBtn) {
+            const oldIcon = currentPlayingBtn.querySelector('i');
+            oldIcon.classList.remove('bi-pause-fill');
+            oldIcon.classList.add('bi-play-fill');
+        }
+
+        // Đổi nguồn nhạc sang bài mới và kích hoạt chạy nhạc
+        audioPlayer.src = songUrl;
+        audioPlayer.load();
+        audioPlayer.play().catch(e => {
+            console.log("Trình duyệt chặn tự động phát hoặc file lỗi:", e);
+            showMp3Toast("Không thể tải file nhạc này!", "bi-exclamation-circle-fill", "#ff6b6b");
+        });
+
+        icon.classList.remove('bi-play-fill');
+        icon.classList.add('bi-pause-fill');
+        showMp3Toast("Đang phát bài: " + songTitle, "bi-play-fill", "#2fbc61");
+
+        currentPlayingBtn = buttonElement;
+    }
+
+    // Tự động trả về icon Play khi bài hát chạy hết bài
+    audioPlayer.addEventListener('ended', () => {
+        if (currentPlayingBtn) {
+            const icon = currentPlayingBtn.querySelector('i');
+            icon.classList.remove('bi-pause-fill');
+            icon.classList.add('bi-play-fill');
+            currentPlayingBtn = null;
+
+            const btnText = document.getElementById('lblPlayText');
+            const headerIcon = document.getElementById('iconPlayAllHeader');
+            if (btnText && headerIcon) {
+                isPlaying = false;
+                btnText.innerHTML = "Phát tất cả";
+                headerIcon.className = "bi bi-play-circle-fill me-2 fs-5";
+            }
+        }
+    });
+
     function confirmDeleteSong(songTitle, playlistId, songId) {
         document.getElementById('deleteSongTitle').innerText = " \"" + songTitle + "\" ";
-
-        // Tạo đường dẫn xóa nhạc truyền về controller của ông
         pendingDeleteUrl = "${pageContext.request.contextPath}/playlist?action=removeSong&id=" + playlistId + "&songId=" + songId;
-
-        // Bật Modal Bootstrap 5
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
         deleteModal.show();
     }
 
-    // ĐÃ BỔ SUNG: Lắng nghe hành động click chốt hạ nút "Đồng ý gỡ" trên Modal
     document.getElementById('btnConfirmDeleteExecute').addEventListener('click', function() {
         if (pendingDeleteUrl !== "") {
             showMp3Toast("Đang tiến hành gỡ bài hát khỏi danh sách...", "bi-trash-fill", "#ff6b6b");
-
-            // Chờ hiệu ứng Toast hiện lên mượt mà rồi mới reload trang qua href
+            // Dừng nhạc nếu bài bị xóa đang phát
+            if(currentPlayingBtn) {
+                audioPlayer.pause();
+            }
             setTimeout(() => {
                 window.location.href = pendingDeleteUrl;
             }, 600);
@@ -436,68 +525,53 @@
     function togglePlayAll() {
         isPlaying = !isPlaying;
         const btnText = document.getElementById('lblPlayText');
-
-        // Reset toàn bộ các icon bài hát đơn lẻ về mặc định khi bấm nút phát tổng
-        const allSongIcons = document.querySelectorAll('.song-play-btn-track');
-        allSongIcons.forEach(icon => {
-            icon.classList.remove('bi-pause-fill');
-            icon.classList.add('bi-play-fill');
-            icon.style.color = '#2fbc61';
-        });
-        currentPlayingTitle = null; // Clear trạng thái bài đơn lẻ
+        const headerIcon = document.getElementById('iconPlayAllHeader');
+        const firstSong = document.querySelector('.mp3-track-card-row .btn-play-now');
 
         if (isPlaying) {
             btnText.innerHTML = "Tạm dừng";
+            if (headerIcon) headerIcon.className = "bi bi-pause-circle-fill me-2 fs-5";
             showMp3Toast("Đang phát toàn bộ danh sách nhạc tuần tự!", "bi-play-circle-fill", "#2fbc61");
+
+            // Nếu chưa phát bài nào hoặc bài hiện tại đang dừng, kích hoạt bài đầu tiên
+            if (firstSong && (!currentPlayingBtn || audioPlayer.paused)) {
+                firstSong.click();
+            }
         } else {
             btnText.innerHTML = "Phát tất cả";
+            if (headerIcon) headerIcon.className = "bi bi-play-circle-fill me-2 fs-5";
             showMp3Toast("Đã tạm dừng danh sách phát.", "bi-pause-circle-fill", "#ff6b6b");
+
+            // Tạm dừng bài hát đang hoạt động nếu có
+            if (currentPlayingBtn && !audioPlayer.paused) {
+                currentPlayingBtn.click();
+            }
         }
     }
 
     function playRandom() {
-        showMp3Toast("Đã kích hoạt chế độ phát ngẫu nhiên (Shuffle Mode) chuẩn ZingMP3!", "bi-shuffle", "#9d4edd");
-    }
+        const allPlayButtons = document.querySelectorAll('.mp3-track-card-row .btn-play-now');
 
-    // Xử lý chuyển đổi icon Play/Pause cho từng bài hát đơn lẻ linh hoạt
-    function playSingleSong(songTitle, buttonElement) {
-        const targetIcon = buttonElement.querySelector('i');
-
-        // TRƯỜNG HỢP 1: Bài này đang phát -> Người dùng nhấn vào để TẠM DỪNG
-        if (currentPlayingTitle === songTitle) {
-            targetIcon.classList.remove('bi-pause-fill');
-            targetIcon.classList.add('bi-play-fill');
-            targetIcon.style.color = '#2fbc61';
-
-            currentPlayingTitle = null;
-            showMp3Toast("Đã tạm dừng bài hát: " + songTitle, "bi-pause-circle-fill", "#ff6b6b");
+        if (allPlayButtons.length === 0) {
+            showMp3Toast("Danh sách phát hiện tại đang trống, không thể phát ngẫu nhiên!", "bi-exclamation-circle", "#ff6b6b");
             return;
         }
 
-        // TRƯỜNG HỢP 2: Người dùng muốn PHÁT một bài hát mới
-        const allSongIcons = document.querySelectorAll('.song-play-btn-track');
-        allSongIcons.forEach(icon => {
-            icon.classList.remove('bi-pause-fill');
-            icon.classList.add('bi-play-fill');
-            icon.style.color = '#2fbc61';
-        });
+        const randomIndex = Math.floor(Math.random() * allPlayButtons.length);
+        const randomSelectedTrack = allPlayButtons[randomIndex];
+        const songTitle = randomSelectedTrack.getAttribute('data-title') || "bài hát ngẫu nhiên";
 
-        targetIcon.classList.remove('bi-play-fill');
-        targetIcon.classList.add('bi-pause-fill');
-        targetIcon.style.color = '#00f2fe';
+        showMp3Toast("🔀 Shuffle: Đang chọn ngẫu nhiên bài '" + songTitle + "'", "bi-shuffle", "#9d4edd");
 
-        currentPlayingTitle = songTitle;
-
-        isPlaying = false;
-        const btnText = document.getElementById('lblPlayText');
-        if(btnText) btnText.innerHTML = "Phát tất cả";
-
-        showMp3Toast("Đang phát bài hát: " + songTitle, "bi-music-note-beamed", "#00f2fe");
+        setTimeout(() => {
+            if (randomSelectedTrack) {
+                randomSelectedTrack.click();
+            }
+        }, 400);
     }
 
     function addSongToPlaylist(songId, songTitle) {
         showMp3Toast("Đang thêm bài '" + songTitle + "' vào playlist...", "bi-check-circle-fill", "#2fbc61");
-
         setTimeout(() => {
             window.location.href = "${pageContext.request.contextPath}/playlist?action=addSong&id=${playlistId}&songId=" + songId;
         }, 800);

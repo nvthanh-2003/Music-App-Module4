@@ -21,11 +21,8 @@ public class PlaylistController extends HttpServlet {
     private IPlaylistRepository playlistRepository = new PlaylistRepository();
     private SongRepository songRepository = new SongRepository();
 
-    // Khởi tạo đối tượng Service để xử lý nghiệp vụ bắt lỗi
     private PlaylistService playlistService = new PlaylistService();
-
-    // ID người dùng cứng đang đăng nhập hệ thống
-    private final Long userId = 2L;
+    private final long userId = 2L;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,7 +32,7 @@ public class PlaylistController extends HttpServlet {
         // 1. Xử lý xóa playlist
         if ("delete".equals(action) && playlistIdStr != null) {
             try {
-                Long playlistId = Long.parseLong(playlistIdStr);
+                long playlistId = Long.parseLong(playlistIdStr);
                 playlistRepository.deleteById(playlistId);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
@@ -47,7 +44,7 @@ public class PlaylistController extends HttpServlet {
         // 2. Xử lý mở giao diện sửa playlist
         if ("edit".equals(action) && playlistIdStr != null) {
             try {
-                Long playlistId = Long.parseLong(playlistIdStr);
+                long playlistId = Long.parseLong(playlistIdStr);
                 Playlist currentPlaylist = playlistRepository.findById(playlistId);
                 request.setAttribute("playlist", currentPlaylist);
                 request.setAttribute("view", "/WEB-INF/views/playlist-edit.jsp");
@@ -72,7 +69,10 @@ public class PlaylistController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/playlist?id=" + playlistIdStr);
                 return;
             }
-        } else if ("removeSong".equals(action)) {
+        }
+
+        // Xử lý nghiệp vụ: GỠ BÀI HÁT KHỎI PLAYLIST
+        else if ("removeSong".equals(action)) {
             String songIdStr = request.getParameter("songId");
 
             // Gọi Service kiểm tra quyền hạn và thực thi xóa
@@ -105,24 +105,24 @@ public class PlaylistController extends HttpServlet {
         // 6. Trường hợp cuối: Xem chi tiết playlist hiện có VÀ xử lý Tìm kiếm nhạc trong list
         else {
             try {
-                Long playlistId = Long.parseLong(playlistIdStr);
+                long playlistId = Long.parseLong(playlistIdStr);
 
-                // Lấy danh sách nhạc hiện tại đang có trong list
+                // Lấy danh sách nhạc hiện tại đang có trong list (Đã nạp file_url từ Repository)
                 List<Song> songs = playlistRepository.findSongsInPlaylist(playlistId);
                 request.setAttribute("songs", songs);
                 request.setAttribute("playlistId", playlistId);
 
-                // Kiểm tra xem session có thông báo lỗi từ đợt addSong thất bại vừa rồi truyền sang không
+                // Kiểm tra xem session có thông báo lỗi từ đợt hành động trước truyền sang không
                 String errorMsg = (String) request.getSession().getAttribute("errorMessage");
                 if (errorMsg != null) {
                     request.setAttribute("businessError", errorMsg);
                     request.getSession().removeAttribute("errorMessage");
                 }
 
-                // Kiểm tra và xử lý thanh tìm kiếm bài hát từ hệ thống
+                // Kiểm tra và xử lý thanh tìm kiếm bài hát từ hệ thống để thêm vào playlist
                 String searchSong = request.getParameter("searchSong");
                 if (searchSong != null && !searchSong.trim().isEmpty()) {
-                    List<Song> foundSongs = songRepository.searchSongs(searchSong);
+                    List<Song> foundSongs = songRepository.searchSongs(searchSong.trim());
                     request.setAttribute("foundSongs", foundSongs);
                 }
 
