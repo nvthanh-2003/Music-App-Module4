@@ -8,7 +8,7 @@ import java.util.List;
 public class SongRepository {
     private final String dbUrl = "jdbc:mysql://localhost:3306/music_app_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8";
     private final String dbUser = "root";
-    private final String dbPass = "1234";
+    private final String dbPass = "123456";
 
     public List<Song> getAllSongs() {
         List<Song> songs = new ArrayList<>();
@@ -117,5 +117,33 @@ public class SongRepository {
             e.printStackTrace();
         }
         return songs;
+    }
+
+    public boolean addSong(Song song, Long artistId, Long genreId) {
+        String query = "INSERT INTO songs (title, artist_id, genre_id, file_url, img_url) VALUES (?, ?, ?, ?, ?)";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+                 PreparedStatement ps = conn.prepareStatement(query)) {
+
+                ps.setString(1, song.getTitle());
+
+                // Xử lý nếu không chọn ca sĩ hoặc thể loại (gán NULL trong DB)
+                if (artistId != null && artistId > 0) ps.setLong(2, artistId);
+                else ps.setNull(2, java.sql.Types.BIGINT);
+
+                if (genreId != null && genreId > 0) ps.setLong(3, genreId);
+                else ps.setNull(3, java.sql.Types.BIGINT);
+
+                ps.setString(4, song.getFileUrl());
+                ps.setString(5, song.getImgUrl());
+
+                int rowsAffected = ps.executeUpdate();
+                return rowsAffected > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 public class GenreRepository {
     private final String dbUrl = "jdbc:mysql://localhost:3306/music_app_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8";
     private final String dbUser = "root";
-    private final String dbPass = "1234";
+    private final String dbPass = "123456";
 
     private Connection getConnection() throws SQLException {
         try {

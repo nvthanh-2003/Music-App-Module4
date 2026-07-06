@@ -10,7 +10,7 @@ import java.util.List;
 public class PlaylistRepository implements IPlaylistRepository {
     private String url = "jdbc:mysql://localhost:3306/music_app_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8";
     private String user = "root";
-    private String pass = "1234";
+    private String pass = "123456";
 
     protected Connection getConnection() throws SQLException {
         try {
